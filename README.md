@@ -128,27 +128,96 @@ getVitals(483);
 
 #### getOne()
 
-```haxe
-Pokewrap#getOne(
-  type:     String,
-  id:       String|PositiveInteger,
-  opts:     ?OptionsObject,
+##### Signature
+1. `getOne(type, id, ?opts, ?callback) => Promise<Resource>`
+  ```
+  type:     ResourceType
+  id:       NameOrId
+  opts:     ?Object
   callback: ?Function
-): Promise<Resource>
+  ```
+
+2. `getOne(opts, ?callback) => Promise<Resource>`
+  ```
+  opts:     Object
+  callback: ?Function
+  ```
+
+##### Examples
+```js
+// These calls are identical
+pokewrap.getOne('berry', 'pinap');
+pokewrap.getOne({ type: 'berry', id: 'pinap' });
+pokewrap.getOne({ type: 'berry', name: 'pinap' });
 ```
+
+```js
+// Pass options to the Request object
+pokewrap.getOne('pokemon', 'magikarp', { cache: 'no-cache' });
+```
+
+```js
+// With a callback
+pokewrap.getOne('pokemon', 'magikarp', (pokemon) => console.log(pokemon));
+```
+
+```js
+// With callback and options
+pokewrap.getOne(
+  'pokemon', 'magikarp',
+  { cache: 'no-cache' },
+  (pokemon) => console.log(pokemon)
+);
+```
+
 [Back to Top ↑](#pokewrap)
 
 ---
 
 #### getOneById()
-```haxe
-Pokewrap#getOneById(
-  id:       String|PositiveInteger,
-  opts:     ?Object,
-  callback: ?Function
-): Promise<Resource>
+##### Signature
+`getOneById(id, ?opts, ?callback) => Promise<Resource>`
 ```
-> **Note:** You may also call this method using `getOneByID` or `getOneByName`.
+id:       NameOrId,
+opts:     ?Object,
+callback: ?Function
+```
+> **Note:** You can also call this method using `getOneByID` or `getOneByName`.
+
+##### Examples
+```js
+pokewrap.getOneById(1);
+pokewrap.getOneById('bulbasaur');
+pokewrap.getOneByName('bulbasaur');
+```
+
+```js
+// Using a different default type
+const pokewrap = new Pokewrap({ defaultType: 'berry' });
+
+// Fetches a cheri berry, not bulbasaur
+pokewrap.getOneById(1);
+```
+
+```js
+// Pass options to the Request object
+pokewrap.getOneById('pikachu', { cache: 'no-cache' });
+```
+
+```js
+// With a callback
+pokewrap.getOneById(1, (pokemon) => console.log(pokemon));
+```
+
+```js
+// With callback and options
+pokewrap.getOneById(
+  'magikarp',
+  { cache: 'no-cache' },
+  (pokemon) => console.log(pokemon)
+);
+```
+
 
 [Back to Top ↑](#pokewrap)
 
@@ -164,12 +233,99 @@ pokemon by `name` using a method called `getOneById`.
 ---
 
 #### getMany()
-```haxe
-Pokewrap#getMany(
-  pokemon:  Array<String|PositiveInteger|Object>,
+
+##### Signature
+1. `getMany(type, ?opts, ?callback) => Promise<Array<Resource>>`
+  ```
+  type:     ResourceType,
   opts:     ?Object,
   callback: ?Function
-): Promise<Object>
+  ```
+
+2. `getMany(type, ids, ?opts, ?callback) => Promise<Array<Resource>>`
+  ```
+  type:     ResourceType,
+  ids:      Array<NameOrId|ResourceObject>,
+  opts:     ?Object,
+  callback: ?Function
+  ```
+
+2. `getMany(ids, ?opts, ?callback) => Promise<Array<Resource>>`
+  ```
+  ids:       Array<NameOrId|ResourceObject>,
+  opts:      ?Object,
+  callback:  ?Function
+  ```
+
+##### Examples
+```js
+// Fetch a paginated list of resources in the given type
+pokewrap.getMany('pokemon');
+pokewrap.getMany('berry');
+```
+
+```js
+// Fetch an array of cherri, sitrus, and pinap berries
+pokewrap.getMany('berry', [1, 10, 20]);
+```
+
+```js
+// Fetch multiple individual resources using the default type
+pokewrap.getMany(['bulbasaur', 'ivysaur', 'venusaur']);
+```
+
+```js
+// Using a different default type
+const pokewrap = new Pokewrap({ defaultType: 'berry' });
+
+// Fetches a cheri berry, not bulbasaur
+pokewrap.getMany(['bulbasaur', 'charmander', 'squirtle']);
+```
+
+```js
+// Mix & Match IDs, names, and objects in the request
+const bulbasaur  = 1;
+const ivysaur   = 'ivysaur'
+const venusaur  = { name: 'venusaur' };
+const solarBeam  = { type: 'move', name: 'solar-beam' };
+
+pokewrap.getMany([bulbasaur, ivysaur, venusaur, solarBeam]);
+```
+```js
+// Pass options to the Request object
+pokewrap.getMany(
+  'item',
+  [1, 2, 3],
+  { cache: 'no-cache' }
+);
+
+pokewrap.getMany(
+  ['bulbasaur', 'charmander', 'squirtle'],
+  { cache: 'no-cache' }
+);
+```
+
+```js
+// With a callback
+pokewrap.getMany(
+  'item',
+  [1, 2, 3],
+  (pokemon) => pokemon.map(console.log.bind(console));
+);
+
+pokewrap.getMany(
+  ['bulbasaur', 'charmander', 'squirtle'],
+  (pokemon) => pokemon.map(console.log.bind(console));
+);
+```
+
+```js
+// With callback and options
+pokewrap.getMany(
+  'berry', ['cherri', 'sitrus', 'pinap'],
+  { cache: 'no-cache' },
+  (pokemon) => console.log(pokemon)
+);
 ```
 
 [Back to Top ↑](#pokewrap)
@@ -177,14 +333,16 @@ Pokewrap#getMany(
 ---
 
 #### getByUrl()
-```haxe
-Pokewrap#getByUrl(
-  url:       String,
-  ?opts:     Object,
-  ?callback: Function
-): Promise<Object>
+##### Signature
+`getByUrl(url, ?opts, ?callback)`
 ```
-> **Note:** You may also call this method using `getByURL`.
+url:       String,
+?opts:     Object,
+?callback: Function
+```
+> **Note:** You can also call this method using `getByURL`.
+
+##### Examples
 
 [Back to Top ↑](#pokewrap)
 
@@ -194,7 +352,30 @@ Pokewrap#getByUrl(
 
 ### Building
 
+The following `npm` scripts are available for use during development:
+
+Command                    | Use for...
+---------------------------|-----------
+`npm run build`            | Transpile & bundle (no minification)
+`npm run build:production` | Transpile & bundle (w/ minification)
+`npm run clean`            | Remove the `dist/` files
+`npm run compile`          | Transpile `src/` to `dist/`
+`npm run lint`             | Lint the files in `src/`
+
+
 ### Testing
+
+For tests with pretty output via [`faucet`](http://github.com/substack/faucet), run:
+
+```sh
+$ npm test
+```
+
+For raw TAP-formatted output, run:
+
+```sh
+$ npm run test:tap
+```
 
 [Back to Top ↑](#pokewrap)
 
