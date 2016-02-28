@@ -7,20 +7,20 @@
 ----
 
 ## Table of Contents
-- [Installation & Setup]('#installation')
-- [Examples]('#examples')
-- [API]('#api')
-  - [Pokewrap()]('#')
-    - [getOne()]('#')
-    - [getOneById()]('#')
-    - [getOneByName()]('#')
-    - [getMany()]('#')
-    - [getByUrl()]('#')
-- [Contributing]('#')
-  - [Building]('#')
-  - [Testing]('#')
-- [Other great wrappers]('#other-great-wrappers')
-- [License]('#license')
+- [Installation & Setup](#installation--setup)
+- [Examples](#examples)
+- [API](#api)
+  - [Pokewrap()](#pokewrap-1)
+    - [getOne()](#getone)
+    - [getOneById()](#getonebyid)
+    - [getOneByName()](#getonebyname)
+    - [getMany()](#getmany)
+    - [getByUrl()](#getbyurl)
+- [Contributing](#contributing)
+  - [Building](#building)
+  - [Testing](#testing)
+- [Other great wrappers](#other-great-wrappers)
+- [License](#license)
 
 ---
 
@@ -39,7 +39,8 @@ import Pokewrap from 'pokewrap';
 const pokewrap = new Pokewrap();
 ```
 
-**Note:** If you're using CommonJS syntax to import Pokewrap, you'll have to explictly import the `default` object:
+**Note:** If you're using CommonJS syntax to import Pokewrap, you'll have to
+explictly import the `default` object:
 
 ```js
 const Pokewrap = require('pokewrap').default;
@@ -147,7 +148,7 @@ Pokewrap#getOneById(
   callback: ?Function
 ): Promise<Resource>
 ```
-> **Note** - You may also call this method using `getOneByID` or `getOneByName`.
+> **Note:** You may also call this method using `getOneByID` or `getOneByName`.
 
 [Back to Top ↑](#pokewrap)
 
@@ -163,7 +164,7 @@ pokemon by `name` using a method called `getOneById`.
 ---
 
 #### getMany()
-```typescript
+```haxe
 Pokewrap#getMany(
   pokemon:  Array<String|PositiveInteger|Object>,
   opts:     ?Object,
@@ -176,20 +177,24 @@ Pokewrap#getMany(
 ---
 
 #### getByUrl()
-```typescript
+```haxe
 Pokewrap#getByUrl(
   url:       String,
   ?opts:     Object,
   ?callback: Function
 ): Promise<Object>
 ```
-> **Note** - You may also call this method using `getByURL`.
+> **Note:** You may also call this method using `getByURL`.
 
 [Back to Top ↑](#pokewrap)
 
 ---
 
 ## Contributing
+
+### Building
+
+### Testing
 
 [Back to Top ↑](#pokewrap)
 
@@ -206,7 +211,7 @@ Pokewrap#getByUrl(
 ## License
 Pokewrap is licensed under the ISC License.
 
-For details, please see the `LICENSE` file.
+For details, please see the [`LICENSE`](https://raw.githubusercontent.com/bdchauvette/pokewrap/master/LICENSE) file.
 
 [Back to Top ↑](#pokewrap)
 
