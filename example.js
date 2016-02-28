@@ -1,4 +1,4 @@
-import Pokewrap from '.';
+const Pokewrap = require('pokewrap').default;
 const pokewrap = new Pokewrap();
 
 pokewrap.getOneById('magikarp')
