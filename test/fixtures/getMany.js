@@ -4,23 +4,24 @@ export default [
     args: ['pokemon'],
     paths: ['/pokemon'],
   },
-  /*
   {
     fn: 'getMany',
     args: ['pokemon', { limit: 10 }],
-    paths: ['/pokemon'],
+    paths: ['/pokemon/?limit=10'],
+    hasQueryParams: true,
   },
   {
     fn: 'getMany',
     args: ['pokemon', { offset: 20 }],
-    paths: ['/pokemon'],
+    paths: ['/pokemon/?offset=20'],
+    hasQueryParams: true,
   },
   {
     fn: 'getMany',
     args: ['pokemon', { limit: 10, offset: 20 }],
-    paths: ['/pokemon'],
+    paths: ['/pokemon/?limit=10&offset=20'],
+    hasQueryParams: true,
   },
-  */
   {
     fn: 'getMany',
     args: ['item', [1, 2, 3]],

@@ -8,7 +8,8 @@ import { manyFixtures as fixtures } from '../fixtures';
 
 const baseUrl = 'http://fake.api';
 const defaultType = 'pokemon';
-const mockTemplate = new UriTemplate('{+baseUrl}{+path}/{?limit,offset}');
+const mockTemplate = new UriTemplate('{+baseUrl}{+path}/');
+const mockTemplateWithQueryParams = new UriTemplate('{+baseUrl}{+path}');
 
 /**
  * Each fixture is an object with a function name, an array of arguments, and
@@ -20,6 +21,7 @@ fixtures.forEach((fixture) => {
     fn,
     paths,
     args,
+    hasQueryParams,
     msg = 'Should fetch all requested resources',
   } = fixture;
 
@@ -27,11 +29,12 @@ fixtures.forEach((fixture) => {
     t.plan(1);
 
     const pokewrap = new Pokewrap({ baseUrl, defaultType });
-    const [, params] = args;
 
     paths.forEach((path) => {
-      const resource = mockTemplate.fillFromObject({ baseUrl, path, params });
-      console.log(resource);
+      const resource = (hasQueryParams)
+        ? mockTemplateWithQueryParams.fillFromObject({ baseUrl, path })
+        : mockTemplate.fillFromObject({ baseUrl, path });
+
       fetchMock.mock(resource, { found: true });
     });
 
@@ -69,8 +72,15 @@ fixtures.forEach((fixture) => {
     };
 
     paths.forEach((path) => {
-      const resource = mockTemplate.fillFromObject({ baseUrl, path, params });
-      fetchMock.mock(resource, { found: true });
+      const matcher = mockTemplate.fillFromObject({ baseUrl, path, params });
+      const routes = {
+        response: { found: true },
+        matcher,
+      };
+
+      console.log(routes);
+
+      fetchMock.mock({ routes, greed: 'bad' });
     });
 
     pokewrap[fn](...args, callback);
