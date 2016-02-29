@@ -39,6 +39,7 @@ export default class Pokewrap {
       ...opts,
       requests,
     };
+
     Object.assign(this, config);
   }
 
@@ -88,7 +89,7 @@ export default class Pokewrap {
             ...opts,
           });
 
-          return this.getByUrl(url, opts.request, callback);
+          return this.getByUrl(url, opts, callback);
         },
       },
     ];
@@ -114,7 +115,7 @@ export default class Pokewrap {
     const { type = this.defaultType } = opts;
     const resource = createUrl({ baseUrl: this.baseUrl, type, id });
 
-    return this.getByUrl(resource, opts.request, callback);
+    return this.getByUrl(resource, opts, callback);
   }
 
   /**
@@ -179,10 +180,10 @@ export default class Pokewrap {
             return this.getMany(type, undefined, opts);
           }
 
-          const { limit, offset, request } = opts;
+          const { limit, offset } = opts;
 
           const url = createUrl({ baseUrl: this.baseUrl, type, limit, offset });
-          return this.getByUrl(url, request, callback);
+          return this.getByUrl(url, opts, callback);
         },
       },
       {
@@ -249,8 +250,9 @@ export default class Pokewrap {
       ...this.requests,
       ...opts,
 
-      // the Pokeapi only supports GET requests
+      // the Pokeapi only supports GET requests, which cannot have a body
       method: 'GET',
+      body: undefined,
     };
 
     const request = fetch(url, requestOpts).then(getJSON);
