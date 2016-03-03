@@ -24,6 +24,14 @@
 
 ---
 
+## Features
+
+- Clean, flexible interface to the RESTful Pokemon API
+- Supports promises and callbacks
+- Works in both node and the browser
+
+---
+
 ## Installation & Setup
 
 Download the files:
@@ -35,17 +43,34 @@ $ npm install --save pokewrap
 Then include it in your source:
 
 ```js
+// ES6+
 import Pokewrap from 'pokewrap';
 const pokewrap = new Pokewrap();
 ```
-
-**Note:** If you're using CommonJS syntax to import Pokewrap, you'll have to
-explictly import the `default` object:
-
 ```js
+// CommonJS
 const Pokewrap = require('pokewrap').default;
 const pokewrap = new Pokewrap();
 ```
+```js
+// Browser
+var pokewrap = new Pokewrap.default();
+```
+
+**Notes:**
+
+- If you use the global variable or CommonJS to work with Pokewrap, you need to
+  explicitly reference the `Pokewrap.default` object.
+
+- Although Pokewrap supports callbacks, it is built using the
+  [`isomorphic-fetch`][],
+  which requires you to bring your own `Promise` library if your target
+  environment doesn't support them natively. Both [`es6-promise`][]  and
+  [`bluebird`][] are great options.
+
+  [`isomorphic-fetch`]: https://github.com/matthew-andrews/isomorphic-fetch
+  [`es6-promise`]: https://github.com/stefanpenner/es6-promise
+  [`bluebird`]: http://bluebirdjs.com/docs/getting-started.html
 
 ---
 
@@ -53,7 +78,7 @@ const pokewrap = new Pokewrap();
 
 ### Basic Usage
 ```js
-// What does Magikarp do, anyway?
+// What can Magikarp do, anyway?
 pokewrap.getOneByName('magikarp')
   .then((pokemon) => pokemon.moves.map(({ move }) => move.name))
   .then((moves) => console.log(moves));
@@ -65,20 +90,21 @@ pokewrap.getOneByName('magikarp')
 
 [Back to Top ↑](#pokewrap)
 
-### Masterful Multiple Fetching
+### Fetch multiple resources in a single call
 ```js
+// Uno, dos, tres!
+pokewrap
+  .getMany(['articuno', 'zapdos', 'moltres'])
+  .then((pokemon) => console.log(getVitals(pokemon)))
+  .catch((err) => console.error(err));
+
 function getVitals(pokemon) {
   return pokemon.map(
     ({ name, height, weight }) => ({name, height, weight})
   );
 }
 
-pokewrap
-  .getMany(['articuno', 'zapdos', 'moltres'])
-  .then((pokemon) => console.log(getVitals(pokemon)))
-  .catch((err) => console.error(err));
 ```
-
 ```js
 [ { name: 'articuno', height: 17, weight: 554 },
   { name: 'zapdos', height: 16, weight: 526 },
@@ -87,13 +113,13 @@ pokewrap
 
 [Back to Top ↑](#pokewrap)
 
-### Fetch more than just Pokemon (even using callbacks!)
+### Fetch any type of resource from the Pokemon API
 ```js
 // How big is a pinap berry?
-pokewrap.getOne('berry', 'pinap', (err, berry) => {
-  if (err) return err;
-  console.log(`A pinap berry is ${berry.size}mm in size.`);
-});
+pokewrap.getOne('berry', 'pinap')
+  .then((berry) => {
+    console.log(`A pinap berry is ${berry.size}mm in size.`);
+  });
 ```
 ```
 A pinap berry is 80mm in size.
@@ -101,21 +127,14 @@ A pinap berry is 80mm in size.
 
 [Back to Top ↑](#pokewrap)
 
-### Goes great with async/await
+### Support for callbacks
 ```js
-async function getVitals(id) {
-  const pokemon = await pokewrap.getOneById(id);
-  console.log({
-    name: pokemon.name,
-    height: pokemon.height,
-    weight: pokemon.weight,
-  });
-}
-
-getVitals(483);
+// Which pokemon loves asynchronous programming?
+pokewrap.getOneById(483, (pokemon) => console.log(pokemon.name));
+);
 ```
 ```js
-{ name: 'dialga', height: 54, weight: 6830 }
+'dialga'
 ```
 
 [Back to Top ↑](#pokewrap)
@@ -125,9 +144,21 @@ getVitals(483);
 ## API
 
 ### Pokewrap()
+##### Signature
+`new Pokewrap(?config) => Pokewrap`
+```js
+config: ?Object
+```
+
+The configuration options and their default values are as follows:
+
+Option        | Default                      | Comments
+--------------|------------------------------|----------
+`baseUrl`     | `'http://pokeapi.co/api/v2'` | The base URL to send requests to.  Changing this value can be useful for testing your own local copy of the Pokemon API
+`defaultType` | `'pokemon'`                  | The default endpoint to fetch resources from. If no type is provided to a call, then Pokewrap will fallback to using this type.
+`requests`    | `{ redirect: 'follow' }`     | Options that are passed to each `Request` object. See the [`Request` documentation at MDN](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) for the full list of options.
 
 #### getOne()
-
 ##### Signature
 1. `getOne(type, id, ?opts, ?callback) => Promise<Resource>`
   ```
@@ -178,8 +209,8 @@ pokewrap.getOne(
 ##### Signature
 `getOneById(id, ?opts, ?callback) => Promise<Resource>`
 ```
-id:       NameOrId,
-opts:     ?Object,
+id:       NameOrId
+opts:     ?Object
 callback: ?Function
 ```
 > **Note:** You can also call this method using `getOneByID` or `getOneByName`.
@@ -237,23 +268,23 @@ pokemon by `name` using a method called `getOneById`.
 ##### Signature
 1. `getMany(type, ?opts, ?callback) => Promise<Array<Resource>>`
   ```
-  type:     ResourceType,
-  opts:     ?Object,
+  type:     ResourceType
+  opts:     ?Object
   callback: ?Function
   ```
 
 2. `getMany(type, ids, ?opts, ?callback) => Promise<Array<Resource>>`
   ```
-  type:     ResourceType,
-  ids:      Array<NameOrId|ResourceObject>,
-  opts:     ?Object,
+  type:     ResourceType
+  ids:      Array<NameOrId|ResourceObject>
+  opts:     ?Object
   callback: ?Function
   ```
 
 2. `getMany(ids, ?opts, ?callback) => Promise<Array<Resource>>`
   ```
-  ids:       Array<NameOrId|ResourceObject>,
-  opts:      ?Object,
+  ids:       Array<NameOrId|ResourceObject>
+  opts:      ?Object
   callback:  ?Function
   ```
 
@@ -310,12 +341,14 @@ pokewrap.getMany(
 pokewrap.getMany(
   'item',
   [1, 2, 3],
-  (pokemon) => pokemon.map(console.log.bind(console));
+  (items) => items.forEach((item) => console.log(item));
 );
 
 pokewrap.getMany(
   ['bulbasaur', 'charmander', 'squirtle'],
-  (pokemon) => pokemon.map(console.log.bind(console));
+  (pokemonList) => {
+    pokemonList.forEach((pokemon) => console.log(pokemon));
+  }
 );
 ```
 
@@ -324,7 +357,7 @@ pokewrap.getMany(
 pokewrap.getMany(
   'berry', ['cherri', 'sitrus', 'pinap'],
   { cache: 'no-cache' },
-  (pokemon) => console.log(pokemon)
+  (berry) => console.log(berry)
 );
 ```
 
@@ -354,7 +387,7 @@ url:       String,
 
 The following `npm` scripts are available for use during development:
 
-Command                    | Use for...
+Command                    | Use to...
 ---------------------------|-----------
 `npm run build`            | Transpile & bundle (no minification)
 `npm run build:production` | Transpile & bundle (w/ minification)
