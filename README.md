@@ -131,7 +131,6 @@ A pinap berry is 80mm in size.
 ```js
 // Which pokemon loves asynchronous programming?
 pokewrap.getOneById(483, (pokemon) => console.log(pokemon.name));
-);
 ```
 ```js
 'dialga'
@@ -157,6 +156,8 @@ Option        | Default                      | Comments
 `baseUrl`     | `'http://pokeapi.co/api/v2'` | The base URL to send requests to.  Changing this value can be useful for testing your own local copy of the Pokemon API
 `defaultType` | `'pokemon'`                  | The default endpoint to fetch resources from. If no type is provided to a call, then Pokewrap will fallback to using this type.
 `requests`    | `{ redirect: 'follow' }`     | Options that are passed to each `Request` object. See the [`Request` documentation at MDN](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) for the full list of options.
+
+---
 
 #### getOne()
 ##### Signature
@@ -185,20 +186,6 @@ pokewrap.getOne({ type: 'berry', name: 'pinap' });
 ```js
 // Pass options to the Request object
 pokewrap.getOne('pokemon', 'magikarp', { cache: 'no-cache' });
-```
-
-```js
-// With a callback
-pokewrap.getOne('pokemon', 'magikarp', (pokemon) => console.log(pokemon));
-```
-
-```js
-// With callback and options
-pokewrap.getOne(
-  'pokemon', 'magikarp',
-  { cache: 'no-cache' },
-  (pokemon) => console.log(pokemon)
-);
 ```
 
 [Back to Top ↑](#pokewrap)
@@ -234,21 +221,6 @@ pokewrap.getOneById(1);
 // Pass options to the Request object
 pokewrap.getOneById('pikachu', { cache: 'no-cache' });
 ```
-
-```js
-// With a callback
-pokewrap.getOneById(1, (pokemon) => console.log(pokemon));
-```
-
-```js
-// With callback and options
-pokewrap.getOneById(
-  'magikarp',
-  { cache: 'no-cache' },
-  (pokemon) => console.log(pokemon)
-);
-```
-
 
 [Back to Top ↑](#pokewrap)
 
@@ -341,23 +313,14 @@ pokewrap.getMany(
 pokewrap.getMany(
   'item',
   [1, 2, 3],
-  (items) => items.forEach((item) => console.log(item));
+  (items) => items.forEach((item) => console.log(item.name));
 );
 
 pokewrap.getMany(
   ['bulbasaur', 'charmander', 'squirtle'],
   (pokemonList) => {
-    pokemonList.forEach((pokemon) => console.log(pokemon));
+    pokemonList.forEach((pokemon) => console.log(pokemon.id));
   }
-);
-```
-
-```js
-// With callback and options
-pokewrap.getMany(
-  'berry', ['cherri', 'sitrus', 'pinap'],
-  { cache: 'no-cache' },
-  (berry) => console.log(berry)
 );
 ```
 
@@ -375,7 +338,11 @@ url:       String,
 ```
 > **Note:** You can also call this method using `getByURL`.
 
-##### Examples
+##### Example
+```js
+pokewrap.getByUrl('http://pokewrap.co/api/v2/pokemon/farfetchd')
+  .then((farfetchd) => console.log(farfetched));
+```
 
 [Back to Top ↑](#pokewrap)
 
