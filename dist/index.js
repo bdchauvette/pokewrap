@@ -60,6 +60,7 @@ var Pokewrap = function () {
     var config = _extends({}, DEFAULT_CONFIG, opts, {
       requests: requests
     });
+
     Object.assign(this, config);
   }
 
@@ -120,7 +121,7 @@ var Pokewrap = function () {
             baseUrl: _this.baseUrl
           }, opts));
 
-          return _this.getByUrl(url, opts.request, callback);
+          return _this.getByUrl(url, opts, callback);
         }
       }];
 
@@ -153,7 +154,7 @@ var Pokewrap = function () {
 
       var resource = createUrl({ baseUrl: this.baseUrl, type: type, id: id });
 
-      return this.getByUrl(resource, opts.request, callback);
+      return this.getByUrl(resource, opts, callback);
     }
 
     /**
@@ -238,11 +239,10 @@ var Pokewrap = function () {
 
           var limit = opts.limit;
           var offset = opts.offset;
-          var request = opts.request;
 
 
           var url = createUrl({ baseUrl: _this2.baseUrl, type: type, limit: limit, offset: offset });
-          return _this2.getByUrl(url, request, callback);
+          return _this2.getByUrl(url, opts, callback);
         }
       }, {
         // getMany('pokemon', ['bulbasaur', 'charmander', 'squirtle']);
@@ -319,8 +319,9 @@ var Pokewrap = function () {
 
       var requestOpts = _extends({}, this.requests, opts, {
 
-        // the Pokeapi only supports GET requests
-        method: 'GET'
+        // the Pokeapi only supports GET requests, which cannot have a body
+        method: 'GET',
+        body: undefined
       });
 
       var request = fetch(url, requestOpts).then(getJSON);

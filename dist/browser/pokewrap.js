@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["Pokewrap"] = factory();
+	else
+		root["Pokewrap"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -1573,6 +1583,7 @@
 	    var config = _extends({}, DEFAULT_CONFIG, opts, {
 	      requests: requests
 	    });
+
 	    Object.assign(this, config);
 	  }
 
@@ -1633,7 +1644,7 @@
 	            baseUrl: _this.baseUrl
 	          }, opts));
 
-	          return _this.getByUrl(url, opts.request, callback);
+	          return _this.getByUrl(url, opts, callback);
 	        }
 	      }];
 
@@ -1666,7 +1677,7 @@
 
 	      var resource = createUrl({ baseUrl: this.baseUrl, type: type, id: id });
 
-	      return this.getByUrl(resource, opts.request, callback);
+	      return this.getByUrl(resource, opts, callback);
 	    }
 
 	    /**
@@ -1751,11 +1762,10 @@
 
 	          var limit = opts.limit;
 	          var offset = opts.offset;
-	          var request = opts.request;
 
 
 	          var url = createUrl({ baseUrl: _this2.baseUrl, type: type, limit: limit, offset: offset });
-	          return _this2.getByUrl(url, request, callback);
+	          return _this2.getByUrl(url, opts, callback);
 	        }
 	      }, {
 	        // getMany('pokemon', ['bulbasaur', 'charmander', 'squirtle']);
@@ -1832,8 +1842,9 @@
 
 	      var requestOpts = _extends({}, this.requests, opts, {
 
-	        // the Pokeapi only supports GET requests
-	        method: 'GET'
+	        // the Pokeapi only supports GET requests, which cannot have a body
+	        method: 'GET',
+	        body: undefined
 	      });
 
 	      var request = fetch(url, requestOpts).then(getJSON);
@@ -3255,4 +3266,6 @@
 
 
 /***/ }
-/******/ ]);
+/******/ ])
+});
+;

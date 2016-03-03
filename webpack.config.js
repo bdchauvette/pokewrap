@@ -6,6 +6,8 @@ const config = {
     pokewrap: './src/index.js',
   },
   output: {
+    library: 'Pokewrap',
+    libraryTarget: 'umd',
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist/browser'),
   },
